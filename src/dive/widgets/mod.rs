@@ -6,3 +6,4 @@ pub mod status_bar;
 pub mod tab_list;
 pub mod tabs;
 pub mod test;
+pub mod log;

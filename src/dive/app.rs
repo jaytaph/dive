@@ -14,6 +14,8 @@ use crossterm::event::KeyCode::Char;
 use crossterm::event::{KeyCode, KeyEvent, KeyModifiers};
 use std::cell::RefCell;
 use std::rc::Rc;
+use log::LevelFilter;
+use crate::dive::gosub_logger::GosubLogger;
 
 pub struct App {
     pub should_quit: bool,
@@ -25,10 +27,13 @@ pub struct App {
     pub tab_manager: Rc<RefCell<TabManager>>,
     pub bookmark_manager: Rc<RefCell<BookmarkManager>>,
     pub widget_manager: WidgetManager,
+
+    pub logger: Rc<GosubLogger>,
 }
 
 impl App {
     pub fn new() -> Self {
+        let logger = Rc::new(GosubLogger::new(10));
         let bm = BookmarkManager::new_from_file("bookmarks.json");
 
         let mut app = Self {
@@ -39,9 +44,14 @@ impl App {
             tab_manager: Rc::new(RefCell::new(TabManager::new())),
             bookmark_manager: Rc::new(RefCell::new(bm)),
 
+            logger,
+
             widget_manager: WidgetManager::new(),
             command_queue: CommandQueue::new(),
         };
+
+        log::set_max_level(LevelFilter::Trace);
+        let _ = log::set_logger(&logger);
 
         // Add the main widgets
         let w1 = Widget::new("statusbar", 0, true, app.status_bar.clone());

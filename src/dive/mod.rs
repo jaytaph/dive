@@ -1,7 +1,7 @@
 pub mod app;
 pub mod bookmark_manager;
 mod command_queue;
-mod logger;
+pub mod gosub_logger;
 pub mod tab_manager;
 mod ui;
 pub mod widget_manager;
